@@ -1,0 +1,11 @@
+{:paths ["src"]
+ :deps {cnuernber/dtype-next {:mvn/version "10.108"}
+        com.github.clj-easy/graal-build-time {:mvn/version "1.0.5"}}
+ :aliases {:graal {:extra-paths ["src-graal"]}
+           :jna {:extra-paths ["src-jna"]
+                 :extra-deps {net.java.dev.jna/jna {:mvn/version "5.14.0"}}}
+           :build {:deps {io.github.clojure/tools.build {:mvn/version "0.9.6"}}
+                   :jvm-opts ["-Dtech.v3.datatype.graal-native=true"
+                              "-Dclojure.compiler.direct-linking=true"
+                              "-Dclojure.spec.skip-macros=true"]
+                   :ns-default build}}}

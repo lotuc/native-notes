@@ -1,0 +1,28 @@
+{:tasks
+ {:requires ([babashka.process :as p])
+
+  build-jna
+  (do (p/shell "clojure -T:build uber-jna")
+      (let [cmd ["java" "-jar" "target/libc-jna.jar"]]
+        (println cmd)
+        (apply p/shell cmd)))
+
+  build-graal
+  (do (p/shell "clojure -T:build uber-graal")
+      (let [cmd (concat ["native-image"
+                         "--report-unsupported-elements-at-runtime"
+                         "--no-fallback"
+                         "--features=clj_easy.graal_build_time.InitClojureClasses"
+                         "-H:+ReportExceptionStackTraces"
+                         "-J-Dclojure.spec.skip-macros=true"
+                         "-J-Dclojure.compiler.direct-linking=true"
+                         "-J-Dtech.v3.datatype.graal-native=true"
+                         "-jar"
+                         "libc-graal.jar"
+                         "lotuc.dt-example.graal_main"]
+                        *command-line-args*)]
+        (println cmd)
+        (apply p/shell {:dir "target"} cmd))
+      (let [cmd ["./target/lotuc.dt-example.graal_main"]]
+        (println cmd)
+        (apply p/shell cmd)))}}

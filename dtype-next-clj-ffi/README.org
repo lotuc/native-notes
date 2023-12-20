@@ -1,0 +1,10 @@
+* dtype-next
+
+The example comes from [[https://github.com/cnuernber/dtype-next/tree/master/examples/clj-ffi][dtype-next\slash{}examples\slash{}clj-ffi]].
+
+#+begin_src sh
+  # Build jna example & run the jar
+  bb build-jna
+  # Build graal example, native-image build the jar & run the binary
+  bb buld-graal
+#+end_src
