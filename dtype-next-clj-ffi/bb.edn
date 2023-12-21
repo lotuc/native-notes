@@ -1,28 +1,35 @@
-{:tasks
- {:requires ([babashka.process :as p])
+{:paths ["src-bb"]
 
-  build-jna
-  (do (p/shell "clojure -T:build uber-jna")
-      (let [cmd ["java" "-jar" "target/libc-jna.jar"]]
-        (println cmd)
-        (apply p/shell cmd)))
+ :tasks
+ {:requires ([babashka.process :as p]
+             [build])
 
-  build-graal
-  (do (p/shell "clojure -T:build uber-graal")
-      (let [cmd (concat ["native-image"
-                         "--report-unsupported-elements-at-runtime"
-                         "--no-fallback"
-                         "--features=clj_easy.graal_build_time.InitClojureClasses"
-                         "-H:+ReportExceptionStackTraces"
-                         "-J-Dclojure.spec.skip-macros=true"
-                         "-J-Dclojure.compiler.direct-linking=true"
-                         "-J-Dtech.v3.datatype.graal-native=true"
-                         "-jar"
-                         "libc-graal.jar"
-                         "lotuc.dt-example.graal_main"]
-                        *command-line-args*)]
-        (println cmd)
-        (apply p/shell {:dir "target"} cmd))
-      (let [cmd ["./target/lotuc.dt-example.graal_main"]]
-        (println cmd)
-        (apply p/shell cmd)))}}
+  test-jna-ffi
+  (do (println "building uber jar...")
+      (p/shell "clojure -T:build uber-jna")
+
+      (println "\ninvoke test\n")
+      (p/shell "java" "-jar" "target/dt-example.jar"))
+
+  test-graal-ffi
+  (do (println "building uber jar...")
+      (p/shell "clojure -T:build uber-graal")
+
+      (println "building native image...")
+      (build/native-image-build)
+
+      (println "\ninvoke test\n")
+      (p/shell "./target/lotuc.dt-example.libc-invoking"))
+
+  test-graal-shared-library
+  (do (println "building uber jar...")
+      (p/shell "clojure -T:build uber-graal")
+
+      (println "building native shared library...")
+      (build/native-image-shared-library-build)
+
+      (println "building the cpp which invokes the shared library...")
+      (build/compile-libgreet-invoking)
+
+      (println "\ninvoke test\n")
+      (p/shell "./target/libgreet-invoking"))}}

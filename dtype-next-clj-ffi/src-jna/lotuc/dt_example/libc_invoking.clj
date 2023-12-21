@@ -1,4 +1,4 @@
-(ns lotuc.dt-example.jna-main
+(ns lotuc.dt-example.libc-invoking
   (:require
    [lotuc.dt-example.libc :as libc]
    [tech.v3.datatype :as dtype]

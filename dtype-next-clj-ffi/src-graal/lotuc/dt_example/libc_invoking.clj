@@ -1,16 +1,17 @@
-(ns lotuc.dt-example.graal-main
+(ns lotuc.dt-example.libc-invoking
   (:require
    [lotuc.dt-example.libc :as libc]
    [tech.v3.datatype.ffi :as dt-ffi]
    [tech.v3.datatype :as dtype]
    ;; required for generated class to work correctly
    [tech.v3.datatype.ffi.graalvm-runtime])
-  (:import [libc GraalBindings])
   (:gen-class))
 
 ;;; macro runs at compile time
-(defmacro make-graal [] (require '[lotuc.dt-example.make-graal]))
+(defmacro make-graal [] (require '[lotuc.dt-example.libc-gen-graal-bindings]))
 (make-graal)
+
+(import '(libc GraalBindings))
 
 (defn -main
   [& _args]

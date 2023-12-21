@@ -1,10 +1,41 @@
 * dtype-next
 
-The example comes from [[https://github.com/cnuernber/dtype-next/tree/master/examples/clj-ffi][dtype-next\slash{}examples\slash{}clj-ffi]].
-
-#+begin_src sh
-  # Build jna example & run the jar
-  bb build-jna
-  # Build graal example, native-image build the jar & run the binary
-  bb buld-graal
+** ffi
+Directory structure
+#+begin_src text
+  src/lotuc/dt_example
+      libc.clj
+  src-graal/lotuc/dt_example
+      libc_gen_graal_bindings.clj
+      libc_invoking.clj
+      libgreet.clj
+      libgreet_gen_bindings.clj
+      libgreet_invoking.cpp
+  src-jna/lotuc/dt_example
+      libc_invoking.clj
 #+end_src
+
+Scripts
+#+begin_src sh
+  # libc.clj defines the libc binding
+
+  bb test-jna-ffi
+  # creates uber jar for src-jna/.../libc_invoking.clj which calls libc binding via jna
+
+  bb test-graal-ffi
+  # creates uber jar for src-graal, libc_invoking.clj calls libc binding via graal
+  # and compiles the jar into native with native-image
+
+  bb test-graal-ffi
+  # creates uber jar for src-graal, libc_invoking.clj calls libc binding via graal
+  # and compiles the jar into native with native-image
+
+  bb test-graal-shared-library
+  # creates uber jar for src-graal
+  # create native shared library with native-image for libgreet.clj binding
+  # compiles the libgreet_invoking.cpp which calls into libgreet.clj binding
+#+end_src
+
+** Related Resources
+- [[https://github.com/cnuernber/dtype-next/tree/master/examples/clj-ffi][dtype-next\slash{}examples\slash{}clj-ffi]]
+- [[https://github.com/cnuernber/avclj][cnuernber\slash{}avclj]]

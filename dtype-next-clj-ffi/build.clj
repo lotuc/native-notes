@@ -6,32 +6,27 @@
 
 (defn- clean-compile [basis]
   (println "\ncleanup...")
-  (b/delete
-   {:path "target"})
+  (b/delete {:path "target"})
+  (b/delete {:path "classes"})
 
   (println "\ncompile clojure...")
   (b/compile-clj
    {:basis basis
     :class-dir class-dir}))
 
-(defn uber-graal [_]
-  (let [basis (b/create-basis {:project "deps.edn" :aliases [:graal]})]
+(defn- uber [aliases]
+  (let [basis (b/create-basis {:project "deps.edn" :aliases aliases})]
     (clean-compile basis)
 
-    (println "\nuber...")
+    (println "\nuber" aliases "...")
     (b/uber
      {:basis basis
       :class-dir class-dir
-      :uber-file "target/libc-graal.jar"
-      :main 'lotuc.dt-example.graal-main})))
+      :uber-file "target/dt-example.jar"
+      :main 'lotuc.dt-example.libc-invoking})))
+
+(defn uber-graal [_]
+  (uber [:graal]))
 
 (defn uber-jna [_]
-  (let [basis (b/create-basis {:project "deps.edn" :aliases [:jna]})]
-    (clean-compile basis)
-
-    (println "\nuber...")
-    (b/uber
-     {:class-dir class-dir
-      :uber-file "target/libc-jna.jar"
-      :basis basis
-      :main 'lotuc.dt-example.jna-main})))
+  (uber [:jna]))

@@ -1,4 +1,4 @@
-(ns lotuc.dt-example.make-graal
+(ns lotuc.dt-example.libc-gen-graal-bindings
   (:require
    [lotuc.dt-example.libc :as libc]
    [tech.v3.datatype.ffi.graalvm :as graalvm]))
